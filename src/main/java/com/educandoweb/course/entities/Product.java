@@ -1,5 +1,6 @@
 package com.educandoweb.course.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -22,9 +23,13 @@ public class Product implements Serializable {
 
     //EAGER Carrega os dados relacionados imediatamente
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "tb_product_category", joinColumns ={ @JoinColumn(name = "product_id")},
+    @JoinTable(name = "tb_product_category", joinColumns = {@JoinColumn(name = "product_id")},
             inverseJoinColumns = {@JoinColumn(name = "category_id")})
     private Set<Category> categories = new HashSet<>();
+
+
+    @OneToMany(mappedBy = "id.product",fetch = FetchType.EAGER)
+    private Set<OrderItem> Items = new HashSet<>();
 
     public Product() {
     }
@@ -81,6 +86,14 @@ public class Product implements Serializable {
         return categories;
     }
 
+    @JsonIgnore
+    public Set<Order> getOrder() {
+        Set<Order> set = new HashSet<>();
+        for (OrderItem x : Items) {
+            set.add(x.getOrder());
+        }
+        return set;
+    }
 
     @Override
     public boolean equals(Object o) {
