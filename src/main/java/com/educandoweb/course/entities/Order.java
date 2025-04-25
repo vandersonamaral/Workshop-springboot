@@ -2,7 +2,6 @@ package com.educandoweb.course.entities;
 
 import com.educandoweb.course.entities.enums.OrderStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -28,17 +27,19 @@ public class Order implements Serializable {
     @JoinColumn(name = "client_id")
     private User client;
 
-    @OneToMany(mappedBy = "id.order",fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "id.order", fetch = FetchType.EAGER)
     private Set<OrderItem> items = new HashSet<>();
 
+    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
+    private Payment payment;
 
     public Order() {
     }
 
-    public Order(Long id, Instant moment, OrderStatus orderStatus,User client) {
+    public Order(Long id, Instant moment, OrderStatus orderStatus, User client) {
         this.id = id;
         this.moment = moment;
-        setOrderStatus( orderStatus);
+        setOrderStatus(orderStatus);
         this.client = client;
 
     }
@@ -76,6 +77,14 @@ public class Order implements Serializable {
 
     public void setClient(User client) {
         this.client = client;
+    }
+
+    public Payment getPayment() {
+        return payment;
+    }
+
+    public void setPayment(Payment payment) {
+        this.payment = payment;
     }
 
     public Set<OrderItem> getItems() {
