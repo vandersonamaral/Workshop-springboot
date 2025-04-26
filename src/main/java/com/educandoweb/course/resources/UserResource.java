@@ -2,6 +2,7 @@ package com.educandoweb.course.resources;
 
 import com.educandoweb.course.entities.User;
 import com.educandoweb.course.services.UserService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -40,6 +41,12 @@ public class UserResource {
     public ResponseEntity<Void> delete(@PathVariable Long id){
         userService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+    @Transactional
+    @PutMapping("/{id}")
+    public ResponseEntity<User> update(@PathVariable Long id,@RequestBody User obj){
+        obj=userService.update(id,obj);
+        return ResponseEntity.ok().body(obj);
     }
 
 }
